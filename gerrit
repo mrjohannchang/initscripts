@@ -1,0 +1,24 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          gerrit
+# Required-Stop:     $all
+# Default-Stop:      0 1 6
+# Short-Description: Stop Gerrit daemon
+# Description:       Stop Gerrit daemon
+### END INIT INFO
+
+set -e
+
+GERRIT_USER="git"
+GERRIT_HOME="/home/${GERRIT_USER}"
+GERRIT="gerrit/bin/gerrit.sh"
+
+case "$1" in
+  stop)
+    su -c "cd ${GERRIT_HOME} && ${GERRIT} stop" ${GERRIT_USER}
+    ;;
+  *) echo "Usage: $0 stop" >&2; exit 1 ;;
+esac
+
+exit 0
