@@ -1,0 +1,29 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          gitit
+# Required-Start:    $local_fs $remote_fs $network $syslog $time
+# Required-Stop:     $local_fs $remote_fs $network $syslog $time
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start or stop Gitit daemon
+# Description:       Start or stop Gitit daemon
+### END INIT INFO
+
+set -e
+
+GITIT_USER="gitit"
+GITIT_HOME="/home/${GITIT_USER}"
+GITIT=".cabal/bin/gitit"
+
+case "$1" in
+  start)
+    su -c "cd ${GITIT_HOME}/wiki && ${GITIT_HOME}/${GITIT} -f gitit.conf &" $GITIT_USER
+    ;;
+  stop)
+    killall gitit
+    ;;
+  *) echo "Usage: $0 {start|stop}" >&2; exit 1 ;;
+esac
+
+exit 0
