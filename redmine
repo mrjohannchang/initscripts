@@ -1,0 +1,29 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          redmine
+# Required-Start:    $local_fs $remote_fs $network $syslog $time postgresql
+# Required-Stop:     $local_fs $remote_fs $network $syslog $time postgresql
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start or stop Redmine daemon
+# Description:       Start or stop Redmine daemon
+### END INIT INFO
+
+set -e
+
+REDMINE_USER="redmine"
+REDMINE_HOME="/home/${REDMINE_USER}"
+
+case "$1" in
+  start)
+    su -c "cd ${REDMINE_HOME}/redmine && thin -e production -p 3000 --prefix /redmine start &" ${REDMINE_USER}
+    ;;
+  stop)
+    ps aux | grep "thin\ \-e\ production\ \-p\ 3000\ \-\-prefix\ \/redmine" \
+        | tail -1 | awk '{print $2}' | xargs kill -SIGINT
+    ;;
+  *) echo "Usage: $0 {start|stop}" >&2; exit 1 ;;
+esac
+
+exit 0
